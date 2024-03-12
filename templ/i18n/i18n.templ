@@ -1,0 +1,17 @@
+package i18n
+
+import (
+	"github.com/invopop/ctxi18n/i18n"
+)
+
+// T will use the key to find the translation in the current context and
+// replace the placeholders with the given arguments.
+templ T(key string, args ...any) {
+	{ i18n.T(ctx, key, args...) }
+}
+
+// N will use the key to find the pluralized translation in the current
+// context and replace the placeholders with the given arguments.
+templ N(key string, n int, args ...any) {
+	{ i18n.N(ctx, key, n, args...) }
+}

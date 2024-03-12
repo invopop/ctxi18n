@@ -1,0 +1,10 @@
+es:
+  welcome_message: "Bienvenido"
+  login:
+    button: "Iniciar Sesión"
+    signup-button: "Registrarse"
+    forgot-password: "¿Olvidaste tu contraseña?"
+  contact_us: "Contáctenos"
+  about_us: "Sobre Nosotros"
+  terms_of_service: "Términos de Servicio"
+  privacy_policy: "Política de Privacidad"
