@@ -14,7 +14,7 @@ func TestZeroOneOtherRule(t *testing.T) {
 			"other": {value: "%{count} mice"},
 		},
 	}
-	rule := GetRule(ZeroOneOtherRuleKey)
+	rule := GetRule(DefaultRuleKey)
 	assert.NotNil(t, rule)
 	assert.Equal(t, "no mice", rule(d, 0))
 	assert.Equal(t, "%{count} mouse", rule(d, 1))

@@ -37,15 +37,15 @@ func (l *Locale) Code() Code {
 	return l.code
 }
 
-// Get provides the value from the dictionary stored by the locale.
-func (l *Locale) Get(key string, args ...any) string {
-	return interpolate(l.dict.get(key), args...)
+// T provides the value from the dictionary stored by the locale.
+func (l *Locale) T(key string, args ...any) string {
+	return interpolate(l.dict.Get(key), args...)
 }
 
-// GetN uses the locale pluralization rules to determine which
+// N uses the locale pluralization rules to determine which
 // string value to provide based on the provided number.
-func (l *Locale) GetN(key string, n int, args ...any) string {
-	entry := l.dict.getEntry(key)
+func (l *Locale) N(key string, n int, args ...any) string {
+	entry := l.dict.GetEntry(key)
 	if entry == nil {
 		return MissingDictKey
 	}

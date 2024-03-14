@@ -15,7 +15,7 @@ type Locales struct {
 }
 
 // Load walks through all the files in the provided File System
-// and merges every file with the current list of locales.
+// and merges every one with the current list of locales.
 func (ls *Locales) Load(src fs.FS) error {
 	return fs.WalkDir(src, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -67,6 +67,16 @@ func (ls *Locales) Match(locale string) *Locale {
 	return nil
 }
 
+// Codes provides a list of locale codes defined in the
+// list.
+func (ls *Locales) Codes() []Code {
+	codes := make([]Code, len(ls.list))
+	for i, l := range ls.list {
+		codes[i] = l.Code()
+	}
+	return codes
+}
+
 // UnmarshalJSON attempts to load the locales from a JSON byte slice
 // and merge them into any existing locales.
 func (ls *Locales) UnmarshalJSON(data []byte) error {
@@ -79,7 +89,7 @@ func (ls *Locales) UnmarshalJSON(data []byte) error {
 	}
 	for c, v := range aux {
 		if l := ls.Get(c); l != nil {
-			l.dict.merge(v)
+			l.dict.Merge(v)
 		} else {
 			ls.list = append(ls.list, NewLocale(c, v))
 		}

@@ -2,7 +2,7 @@ package i18n
 
 // Standard pluralization rule keys.
 const (
-	ZeroOneOtherRuleKey = "zero-one-other"
+	DefaultRuleKey = "default"
 )
 
 const (
@@ -12,19 +12,18 @@ const (
 )
 
 var rules = map[string]PluralRule{
-	// Zero, One, Other, is the cardinal pluralization rule for
-	// most Latin based languages, including english.
-	ZeroOneOtherRuleKey: func(d *Dict, num int) string {
-		if num == 0 {
-			v := d.getEntry(zeroKey)
+	// Most languages can use this rule
+	DefaultRuleKey: func(d *Dict, n int) string {
+		if n == 0 {
+			v := d.GetEntry(zeroKey)
 			if v != nil {
 				return v.value
 			}
 		}
-		if num == 1 {
-			return d.get(oneKey)
+		if n == 1 {
+			return d.Get(oneKey)
 		}
-		return d.get(otherKey)
+		return d.Get(otherKey)
 	},
 }
 
@@ -35,5 +34,5 @@ func GetRule(key string) PluralRule {
 
 // mapPluralRule is used to map a language code into a pluralization rule.
 func mapPluralRule(_ Code) PluralRule {
-	return rules[ZeroOneOtherRuleKey]
+	return rules[DefaultRuleKey]
 }

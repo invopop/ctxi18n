@@ -1,3 +1,5 @@
+// Package ctxi18n is used to internationalize applications using the context
+// for the locale.
 package ctxi18n
 
 import (
@@ -42,4 +44,9 @@ func WithLocale(ctx context.Context, locale string) (context.Context, error) {
 		}
 	}
 	return l.WithContext(ctx), nil
+}
+
+// Locale provides the locale object currently stored in the context.
+func Locale(ctx context.Context) *i18n.Locale {
+	return i18n.GetLocale(ctx)
 }

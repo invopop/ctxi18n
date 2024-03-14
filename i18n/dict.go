@@ -17,9 +17,34 @@ type Dict struct {
 	entries map[string]*Dict
 }
 
+// NewDict instantiates a new dict object.
+func NewDict() *Dict {
+	return &Dict{
+		entries: make(map[string]*Dict),
+	}
+}
+
+// Add adds a new key value pair to the dictionary.
+func (d *Dict) Add(key string, value any) {
+	switch v := value.(type) {
+	case string:
+		d.entries[key] = &Dict{value: v}
+	case map[string]any:
+		nd := NewDict()
+		for k, row := range v {
+			nd.Add(k, row)
+		}
+		d.entries[key] = nd
+	case *Dict:
+		d.entries[key] = v
+	default:
+		// ignore
+	}
+}
+
 // Get provides the value from the dictionary at the provided key location.
-func (d *Dict) get(key string) string {
-	entry := d.getEntry(key)
+func (d *Dict) Get(key string) string {
+	entry := d.GetEntry(key)
 	if entry == nil {
 		return MissingDictKey
 	}
@@ -27,7 +52,7 @@ func (d *Dict) get(key string) string {
 }
 
 // GetEntry recursively retrieves the dictionary at the provided key location.
-func (d *Dict) getEntry(key string) *Dict {
+func (d *Dict) GetEntry(key string) *Dict {
 	if key == "" {
 		return nil
 	}
@@ -39,11 +64,11 @@ func (d *Dict) getEntry(key string) *Dict {
 	if len(n) == 1 {
 		return entry
 	}
-	return entry.getEntry(n[1])
+	return entry.GetEntry(n[1])
 }
 
-// merge combines the entries of the second dictionary into this one.
-func (d *Dict) merge(d2 *Dict) {
+// Merge combines the entries of the second dictionary into this one.
+func (d *Dict) Merge(d2 *Dict) {
 	if d2 == nil {
 		return
 	}
@@ -55,7 +80,7 @@ func (d *Dict) merge(d2 *Dict) {
 			d.entries[k] = v
 			continue
 		}
-		d.entries[k].merge(v)
+		d.entries[k].Merge(v)
 	}
 }
 

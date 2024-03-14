@@ -18,12 +18,12 @@ func TestLocalesLoad(t *testing.T) {
 
 	en := ls.Get("en")
 	require.NotNil(t, en)
-	assert.Equal(t, "Log In", en.Get("login.button"))
-	assert.Equal(t, "Extensions", en.Get("ext.test"))
+	assert.Equal(t, "Log In", en.T("login.button"))
+	assert.Equal(t, "Extensions", en.T("ext.test"))
 
 	es := ls.Get("es")
 	require.NotNil(t, es)
-	assert.Equal(t, "Iniciar Sesión", es.Get("login.button"))
+	assert.Equal(t, "Iniciar Sesión", es.T("login.button"))
 
 	l := ls.Match("en-US,en;q=0.9,es;q=0.8")
 	require.NotNil(t, l)
@@ -39,7 +39,7 @@ func TestLocalesUnmarshalJSON(t *testing.T) {
 	require.NoError(t, err)
 	l := ls.Get("en")
 	assert.Equal(t, "en", l.Code().String())
-	assert.Equal(t, "quux", l.Get("baz.qux"))
+	assert.Equal(t, "quux", l.T("baz.qux"))
 
 	// Now try merging with another set of entries
 	sub := []byte(`{
@@ -53,9 +53,19 @@ func TestLocalesUnmarshalJSON(t *testing.T) {
 	err = json.Unmarshal(sub, ls)
 	require.NoError(t, err)
 	assert.Equal(t, "en", l.Code().String())
-	assert.Equal(t, "quux", l.Get("baz.qux"))
-	assert.Equal(t, "b", l.Get("a"))
-	assert.Equal(t, "zuux", l.Get("baz.zux"))
+	assert.Equal(t, "quux", l.T("baz.qux"))
+	assert.Equal(t, "b", l.T("a"))
+	assert.Equal(t, "zuux", l.T("baz.zux"))
+}
+
+func TestLocalesCodes(t *testing.T) {
+	in := SampleLocales()
+	ls := new(i18n.Locales)
+	require.NoError(t, json.Unmarshal(in, ls))
+	codes := ls.Codes()
+	assert.Len(t, codes, 2)
+	assert.Contains(t, codes, i18n.Code("en"))
+	assert.Contains(t, codes, i18n.Code("es"))
 }
 
 func SampleLocales() []byte {
@@ -68,6 +78,17 @@ func SampleLocales() []byte {
 					"zero": "no mice",
 					"one": "%{count} mouse",
 					"other": "%{count} mice"
+				}
+			}
+		},
+		"es": {
+			"foo": "bara",
+			"baz": {
+				"qux": "quuxa",
+				"plural": {
+					"zero": "no ratones",
+					"one": "%{count} ratón",
+					"other": "%{count} ratones"
 				}
 			}
 		}

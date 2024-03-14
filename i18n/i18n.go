@@ -19,7 +19,7 @@ func T(ctx context.Context, key string, args ...any) string {
 	if l == nil {
 		return MissingDictKey
 	}
-	return l.Get(key, args...)
+	return l.T(key, args...)
 }
 
 // N returns the pluralized translation of the provided key using n
@@ -29,7 +29,7 @@ func N(ctx context.Context, key string, n int, args ...any) string {
 	if l == nil {
 		return MissingDictKey
 	}
-	return l.GetN(key, n, args...)
+	return l.N(key, n, args...)
 }
 
 // Replace is used to interpolate the matched keys in the provided
