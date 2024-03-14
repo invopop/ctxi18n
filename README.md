@@ -6,11 +6,12 @@ Go Context Internationalization - translating apps easily.
 
 `ctxi18n` is heavily influenced by the Ruby i18n gem and aims to make it internationalization in Go applications as straightforward as in Ruby.
 
-As the name suggests, `ctxi18n` focusses on making i18n methods accessible via the application's context for a given incoming request. I18n should be as quick and easy to use as possible, so this package provides a set of helper methods with short names and parameter lists.
+As the name suggests, `ctxi18n` focusses on making i18n methods accessible via the application's context. I18n should be as quick and easy to use as possible, so this package provides a set of helper methods with short names and parameter lists.
 
 Key Features:
 
 - Loads locale files in YAML, like Ruby i18n.
+- Makes it easy to associate a locale object with the current context.
 - Supports Go's embed FS to load data from inside binary.
 - Short method names and usage to Gettext like `i18n.T()` or `i18n.N()`.
 - Support for simple interpolation using keys, e.g. `Some %{key} text`
@@ -18,13 +19,13 @@ Key Features:
 
 ## Usage
 
-Import the libary with:
+Import the library with:
 
 ```go
 import "github.com/invopop/ctxi18n"
 ```
 
-First you'll need to load a set of translations hopefully stored in an embedded file system that contains a bunch of YAML or JSON files. Files may be named and structured however you like, but the contents must always follow the same pattern of language and properties, for example:
+First you'll need to load a set of translations stored in an file system that contains a bunch of YAML or JSON files. Files may be named and structured however you like, but the contents must always follow the same pattern of language and properties, for example:
 
 ```yaml
 en:
@@ -59,17 +60,17 @@ You'll now have a global set of locales prepared in memory and ready to use. Ass
 ctx = ctxi18n.WithLocale(ctx, "en")
 ```
 
-Locale selection is performed according to [RFC9110](https://www.rfc-editor.org/rfc/rfc9110.html) and the `Accept-Language` header, so you can pass in code string and an attempt will be made to find the best match.
-
-In this example, the first locale to matched will be `en-US`, followed by just `en`, then `es`:
+Locale selection is performed according to [RFC9110](https://www.rfc-editor.org/rfc/rfc9110.html) and the `Accept-Language` header, so you can pass in a code string and an attempt will be made to find the best match:
 
 ```go
 ctx = ctxi18n.WithLocale(ctx, "en-US,en;q=0.9,es;q=0.8")
 ```
 
+In this example, the first locale to matched will be `en-US`, followed by just `en`, then `es`:
+
 Getting translations is straightforward, you have two options:
 
-1.  call methods define in the package with the context, or,
+1.  call methods defined in the package with the context, or,
 2.  extract the locale from the context and use.
 
 To translate without extracting the locale, you'll need to load the `i18n` helper package:
@@ -78,7 +79,7 @@ To translate without extracting the locale, you'll need to load the `i18n` helpe
 import "github.com/invopop/ctxi18n/i18n"
 ```
 
-That contains helper methods that allow you to use the context directly:
+This package contains helper methods that allow you to use the context directly:
 
 ```go
 fmt.Println(i18n.T(ctx, "welcome.title"))
@@ -86,14 +87,14 @@ fmt.Println(i18n.T(ctx, "welcome.title"))
 
 Notice in the example that the `title` was previously defined inside the `welcome` object in the source YAML, and we're accessing it here by defining the path `welcome.title`.
 
-To use the `Locale` object directly, extract it from the context and call the methods directly:
+To use the `Locale` object directly, extract it from the context and call the methods:
 
 ```go
 l := ctxi18n.Locale(ctx)
 fmt.Println(l.T("welcome.title"))
 ```
 
-There is no preferred way on how to use this library, so please use whatever best first your application and coding style.
+There is no preferred way on how to use this library, so please use whatever best first your application and coding style. Sometimes it makes sense to pass in the context in every call, other times the code can be shorter and more concise by extracting it.
 
 ### Interpolation
 
@@ -111,7 +112,7 @@ You can get the translated text and interpolate with:
 i18n.T(ctx, "welcome.title", "Sam")
 ```
 
-This however is an anti-pattern when it comes to translating applications as translators may need to change the order of replaced words. To get around this, `ctxi18n` supports simple named interpolation as follows:
+This however is an _anti-pattern_ when it comes to translating applications as translators may need to change the order of replaced words. To get around this, `ctxi18n` supports simple named interpolation as follows:
 
 ```yaml
 en:
@@ -123,11 +124,11 @@ en:
 i18n.T(ctx, "welcome.title", i18n.M{"name":"Sam"})
 ```
 
-The `i18n.M` map is used to perform a simple find and replace on the matching translation. The `fmt.Sprint` method is used to convert values into strings, so you don't need to worry about serializing numbers.
+The `i18n.M` map is used to perform a simple find and replace on the matching translation. The `fmt.Sprint` method is used to convert values into strings, so you don't need to worry about simple serialization like for numbers.
 
 ## Pluralization
 
-When texts include references to numbers we need internationalization libraries that help define multiple possible translations according to a number. Pluralized translations are defined like this:
+When texts include references to numbers we need internationalization libraries like `ctxi18n` that help define multiple possible translations according to a number. Pluralized translations are defined like this:
 
 ```yaml
 en:
