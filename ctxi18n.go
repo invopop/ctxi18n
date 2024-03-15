@@ -26,11 +26,26 @@ var (
 	ErrMissingLocale = errors.New("locale not defined")
 )
 
+func init() {
+	locales = new(i18n.Locales)
+}
+
 // Load walks through all the files in provided File System and prepares
 // an internal global list of locales ready to use.
 func Load(fs fs.FS) error {
-	locales = new(i18n.Locales)
 	return locales.Load(fs)
+}
+
+// Get provides the Locale object for the matching code.
+func Get(code i18n.Code) *i18n.Locale {
+	return locales.Get(code)
+}
+
+// Match attempts to find the best possible matching locale based on the
+// locale string provided. The locale string is parsed according to the
+// "Accept-Language" header format defined in RFC9110.
+func Match(locale string) *i18n.Locale {
+	return locales.Match(locale)
 }
 
 // WithLocale tries to match the provided code with a locale and ensures

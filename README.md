@@ -15,7 +15,6 @@ Key Features:
 - Supports Go's embed FS to load data from inside binary.
 - Short method names and usage to Gettext like `i18n.T()` or `i18n.N()`.
 - Support for simple interpolation using keys, e.g. `Some %{key} text`
-- Built in support for [templ templating](https://templ.guide/) which uses context throughout.
 
 ## Usage
 
@@ -73,19 +72,19 @@ Getting translations is straightforward, you have two options:
 1.  call methods defined in the package with the context, or,
 2.  extract the locale from the context and use.
 
-To translate without extracting the locale, you'll need to load the `i18n` helper package:
+To translate without extracting the locale, you'll need to load the `i18n` package which contains all the structures and methods used by the main `ctxi18n` without any globals:
 
 ```go
 import "github.com/invopop/ctxi18n/i18n"
 ```
 
-This package contains helper methods that allow you to use the context directly:
+Then use it with the context:
 
 ```go
 fmt.Println(i18n.T(ctx, "welcome.title"))
 ```
 
-Notice in the example that the `title` was previously defined inside the `welcome` object in the source YAML, and we're accessing it here by defining the path `welcome.title`.
+Notice in the example that `title` was previously defined inside the `welcome` object in the source YAML, and we're accessing it here by defining the path `welcome.title`.
 
 To use the `Locale` object directly, extract it from the context and call the methods:
 
@@ -139,7 +138,7 @@ en:
       other: "You have %{count} emails.
 ```
 
-The `inbox.emails` tag has a sub-object that defines all the translations we need according to the pluralization rules of the language. In the case of English and the default rule set, `zero` is an optional definition that will be used if provided.
+The `inbox.emails` tag has a sub-object that defines all the translations we need according to the pluralization rules of the language. In the case of English which uses the default rule set, `zero` is an optional definition that will be used if provided and fallback on `other` if not.
 
 To use these translations, call the `i18n.N` method:
 
@@ -150,4 +149,32 @@ fmt.Println(i18n.N(ctx, "inbox.emails", count, i18n.M{"count": count}))
 
 The output from this will be: "You have 2 emails."
 
-In the current implementation of `ctxi18n` there are very few pluralization rules defined, please do submit PRs if you language is not covered!
+In the current implementation of `ctxi18n` there are very few pluralization rules defined, please submit PRs if your language is not covered!
+
+## Templ
+
+[Templ](https://templ.guide/) is a templating library that helps you create components that render fragments of HTML and compose them to create screens, pages, documents or apps.
+
+The following "Hello World" example is taken from the [Templ Guide](https://templ.guide) and shows how you can quickly add translations the leverage the built-in `ctx` variable provided by Templ.
+
+```yaml
+en:
+  welcome:
+    hello: "Hello, %{name}"
+```
+
+```go
+package main
+
+import "github.com/invopop/ctxi18n/i18n"
+
+templ Hello(name string) {
+  <div>{ i18n.T(ctx, "welcome.hello", i18n.M{"name": name}) }</div>
+}
+
+templ Greeting(person Person) {
+  <div class="greeting">
+    @Hello(person.Name)
+  </div>
+}
+```

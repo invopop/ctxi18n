@@ -29,6 +29,10 @@ func TestLocalesLoad(t *testing.T) {
 	require.NotNil(t, l)
 	assert.Equal(t, "en", l.Code().String())
 
+	l = ls.Match("es-ES,es;q=0.9,en;q=0.8")
+	require.NotNil(t, l)
+	assert.Equal(t, "es", l.Code().String())
+
 	assert.Nil(t, ls.Match("inv"))
 }
 
