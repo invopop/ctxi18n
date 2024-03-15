@@ -10,7 +10,7 @@ Go Context Internationalization - translating apps easily.
 
 ## Introduction
 
-`ctxi18n` is heavily influenced by the Ruby i18n gem and aims to make it internationalization in Go applications as straightforward as in Ruby.
+`ctxi18n` is heavily influenced by the [Ruby on Rails i18n](https://guides.rubyonrails.org/i18n.html) and aims to make it internationalization in Go applications just as straightforward.
 
 As the name suggests, `ctxi18n` focusses on making i18n methods accessible via the application's context. I18n should be as quick and easy to use as possible, so this package provides a set of helper methods with short names and parameter lists.
 
