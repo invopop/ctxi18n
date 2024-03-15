@@ -184,3 +184,9 @@ templ Greeting(person Person) {
   </div>
 }
 ```
+
+# Examples
+
+The following is a list of Open Source projects using this library from which you can see working examples for your own solutions. Please send in a PR if you'd like to add your project!
+
+- [GOBL HTML](https://github.com/invopop/gobl.html) - generate HTML files from [GOBL](https://gobl.org) documents.
