@@ -10,17 +10,18 @@ Go Context Internationalization - translating apps easily.
 
 ## Introduction
 
-`ctxi18n` is heavily influenced by the [Ruby on Rails i18n](https://guides.rubyonrails.org/i18n.html) and aims to make it internationalization in Go applications just as straightforward.
+`ctxi18n` is heavily influenced by the [Ruby on Rails i18n](https://guides.rubyonrails.org/i18n.html) and aims to make internationalization in Go applications just as straightforward.
 
-As the name suggests, `ctxi18n` focusses on making i18n methods accessible via the application's context. I18n should be as quick and easy to use as possible, so this package provides a set of helper methods with short names and parameter lists.
+As the name suggests, `ctxi18n` focusses on making i18n methods accessible via the application's context. I18n should be as quick and easy to use as possible, so this package provides a set methods with short names and simple parameters.
 
 Key Features:
 
-- Loads locale files in YAML, like Ruby i18n.
-- Makes it easy to associate a locale object with the current context.
-- Supports Go's embed FS to load data from inside binary.
-- Short method names and usage to Gettext like `i18n.T()` or `i18n.N()`.
+- Loads locale files written in YAML or JSON, like Ruby i18n.
+- Makes it easy to add a locale object to the context.
+- Supports `fs.FS` to load data.
+- Short method names like `i18n.T()` or `i18n.N()`.
 - Support for simple interpolation using keys, e.g. `Some %{key} text`
+- Support for pluralization rules.
 
 ## Usage
 
@@ -30,7 +31,7 @@ Import the library with:
 import "github.com/invopop/ctxi18n"
 ```
 
-First you'll need to load a set of translations stored in an file system that contains a bunch of YAML or JSON files. Files may be named and structured however you like, but the contents must always follow the same pattern of language and properties, for example:
+First you'll need to load YAML or JSON translation definitions. Files may be named and structured however you like, but the contents must always follow the same pattern of language and properties, for example:
 
 ```yaml
 en:
