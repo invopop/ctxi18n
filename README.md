@@ -1,5 +1,11 @@
 # ctxi18n
 
+[![Lint](https://github.com/invopop/ctxi18n/actions/workflows/lint.yaml/badge.svg)](https://github.com/invopop/ctxi18n/actions/workflows/lint.yaml)
+[![Test Go](https://github.com/invopop/ctxi18n/actions/workflows/test.yaml/badge.svg)](https://github.com/invopop/ctxi18n/actions/workflows/test.yaml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/invopop/ctxi18n)](https://goreportcard.com/report/github.com/invopop/ctxi18n)
+[![GoDoc](https://godoc.org/github.com/invopop/ctxi18n?status.svg)](https://godoc.org/github.com/invopop/ctxi18n)
+![Latest Tag](https://img.shields.io/github/v/tag/invopop/ctxi18n)
+
 Go Context Internationalization - translating apps easily.
 
 ## Introduction
