@@ -47,7 +47,7 @@ func (l *Locale) T(key string, args ...any) string {
 func (l *Locale) N(key string, n int, args ...any) string {
 	entry := l.dict.GetEntry(key)
 	if entry == nil {
-		return MissingDictKey
+		return missing(key)
 	}
 	return interpolate(l.rule(entry, n), args...)
 }

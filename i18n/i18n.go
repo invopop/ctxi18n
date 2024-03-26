@@ -8,6 +8,16 @@ import (
 	"strings"
 )
 
+const (
+	missingLocaleOut = "!(MISSING LOCALE)"
+)
+
+type scopeType string
+
+const (
+	scopeKey scopeType = "scope"
+)
+
 // M stands for map and is a simple helper to make it easier to work with
 // internationalization maps.
 type M map[string]any
@@ -17,8 +27,9 @@ type M map[string]any
 func T(ctx context.Context, key string, args ...any) string {
 	l := GetLocale(ctx)
 	if l == nil {
-		return MissingDictKey
+		return missingLocaleOut
 	}
+	key = ExpandKey(ctx, key)
 	return l.T(key, args...)
 }
 
@@ -27,9 +38,29 @@ func T(ctx context.Context, key string, args ...any) string {
 func N(ctx context.Context, key string, n int, args ...any) string {
 	l := GetLocale(ctx)
 	if l == nil {
-		return MissingDictKey
+		return missingLocaleOut
 	}
+	key = ExpandKey(ctx, key)
 	return l.N(key, n, args...)
+}
+
+// WithScope is used to add a new scope to the context. To use this,
+// use a `.` at the beginning of keys.
+func WithScope(ctx context.Context, key string) context.Context {
+	return context.WithValue(ctx, scopeKey, key)
+}
+
+// ExpandKey extracts the current scope from the context and appends it
+// to the start of the provided key.
+func ExpandKey(ctx context.Context, key string) string {
+	if !strings.HasPrefix(key, ".") {
+		return key
+	}
+	scope, ok := ctx.Value(scopeKey).(string)
+	if !ok {
+		return key
+	}
+	return fmt.Sprintf("%s%s", scope, key)
 }
 
 // Replace is used to interpolate the matched keys in the provided

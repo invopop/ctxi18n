@@ -10,13 +10,13 @@ Go Context Internationalization - translating apps easily.
 
 ## Introduction
 
-`ctxi18n` is heavily influenced by the [Ruby on Rails i18n](https://guides.rubyonrails.org/i18n.html) and aims to make internationalization in Go applications just as straightforward.
+`ctxi18n` is heavily influenced by [internationalization in Ruby on Rails](https://guides.rubyonrails.org/i18n.html) and aims to make it just as straightforward in Go applications.
 
-As the name suggests, `ctxi18n` focusses on making i18n methods accessible via the application's context. I18n should be as quick and easy to use as possible, so this package provides a set methods with short names and simple parameters.
+As the name suggests, `ctxi18n` focusses on making i18n data available inside an application's context instances, but is sufficiently flexible to use directly if needed.
 
 Key Features:
 
-- Loads locale files written in YAML or JSON, like Ruby i18n.
+- Loads locale files written in YAML or JSON with a similar structure those in Ruby i18n.
 - Makes it easy to add a locale object to the context.
 - Supports `fs.FS` to load data.
 - Short method names like `i18n.T()` or `i18n.N()`.
@@ -157,6 +157,17 @@ fmt.Println(i18n.N(ctx, "inbox.emails", count, i18n.M{"count": count}))
 The output from this will be: "You have 2 emails."
 
 In the current implementation of `ctxi18n` there are very few pluralization rules defined, please submit PRs if your language is not covered!
+
+## Scopes
+
+As your application gets more complex, it can get repetitive having to use the same base keys. To get around this, use the `WithScope` helper method inside a context:
+
+```go
+ctx := i18n.WithScope(ctx, "welcome")
+i18n.T(ctx, ".title", i18n.M{"name":"Sam"})
+```
+
+Anything with the `.` at the beginning will append the scope. You can continue to use any other key in the locale by not using the `.` at the front.
 
 ## Templ
 
