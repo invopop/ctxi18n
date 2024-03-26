@@ -2,13 +2,12 @@ package i18n
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 )
 
 const (
-	// MissingDictKey is provided when a specific entry in the dictionary
-	// cannot be found.
-	MissingDictKey = "!(MISSING)"
+	missingDictOut = "!(MISSING: %s)"
 )
 
 // Dict holds the internationalization entries for a specific locale.
@@ -46,7 +45,7 @@ func (d *Dict) Add(key string, value any) {
 func (d *Dict) Get(key string) string {
 	entry := d.GetEntry(key)
 	if entry == nil {
-		return MissingDictKey
+		return missing(key)
 	}
 	return entry.value
 }
@@ -95,4 +94,8 @@ func (d *Dict) UnmarshalJSON(data []byte) error {
 	}
 	d.entries = make(map[string]*Dict)
 	return json.Unmarshal(data, &d.entries)
+}
+
+func missing(key string) string {
+	return fmt.Sprintf(missingDictOut, key)
 }

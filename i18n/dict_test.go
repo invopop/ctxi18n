@@ -26,7 +26,7 @@ func TestDictUnmarshalJSON(t *testing.T) {
 	assert.Equal(t, "bar", dict.Get("foo"))
 	assert.Equal(t, "quux", dict.Get("baz.qux"))
 	assert.Equal(t, "", dict.Get("baz.plural"))
-	assert.Equal(t, "!(MISSING)", dict.Get("random"))
+	assert.Equal(t, "!(MISSING: random)", dict.Get("random"))
 }
 
 func TestDictAdd(t *testing.T) {
@@ -43,7 +43,7 @@ func TestDictAdd(t *testing.T) {
 	assert.Equal(t, "%s mice", d.Get("plural.other"))
 
 	d.Add("bad", 10) // ignore
-	assert.Equal(t, MissingDictKey, d.Get("bad"))
+	assert.Equal(t, "!(MISSING: bad)", d.Get("bad"))
 
 	d.Add("self", d)
 	assert.Equal(t, "bar", d.Get("self.foo"))
