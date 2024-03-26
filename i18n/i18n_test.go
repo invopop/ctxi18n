@@ -62,4 +62,7 @@ func TestScopes(t *testing.T) {
 	assert.Equal(t, "!(MISSING: .qux)", i18n.T(ctx, ".qux"))
 
 	assert.Equal(t, "no mice", i18n.N(ctxScoped, ".mice", 0, i18n.M{"count": 0}))
+
+	ctxScoped = i18n.WithScope(ctxScoped, ".mice")
+	assert.Equal(t, "no mice", i18n.T(ctxScoped, ".zero"))
 }

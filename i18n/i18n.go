@@ -47,6 +47,7 @@ func N(ctx context.Context, key string, n int, args ...any) string {
 // WithScope is used to add a new scope to the context. To use this,
 // use a `.` at the beginning of keys.
 func WithScope(ctx context.Context, key string) context.Context {
+	key = ExpandKey(ctx, key)
 	return context.WithValue(ctx, scopeKey, key)
 }
 
