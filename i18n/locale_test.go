@@ -20,10 +20,16 @@ func TestLocaleGet(t *testing.T) {
 
 	assert.Equal(t, "bar", l.T("foo"))
 	assert.Equal(t, "quux", l.T("baz.qux"))
+	assert.Equal(t, "!(MISSING: baz.random)", l.T("baz.random"))
 	assert.Equal(t, "no mice", l.N("baz.mice", 0, i18n.M{"count": 0}))
 	assert.Equal(t, "1 mouse", l.N("baz.mice", 1, i18n.M{"count": 1}))
 	assert.Equal(t, "2 mice", l.N("baz.mice", 2, i18n.M{"count": 2}))
 	assert.Equal(t, "!(MISSING: random)", l.N("random", 2))
+
+	assert.Equal(t, "xyz", l.T("random", i18n.Default("xyz")))
+	assert.Equal(t, "xyz test", l.T("random", i18n.Default("xyz %{foo}"), i18n.M{"foo": "test"}))
+	assert.Equal(t, "xyz test", l.T("random", i18n.M{"foo": "test"}, i18n.Default("xyz %{foo}")))
+	assert.Equal(t, "2 mouses", l.N("baz.random", 2, i18n.Default("%{count} mouses"), i18n.M{"count": 2}))
 }
 
 func TestLocaleInterpolate(t *testing.T) {

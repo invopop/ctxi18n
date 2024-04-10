@@ -16,9 +16,9 @@ func TestZeroOneOtherRule(t *testing.T) {
 	}
 	rule := GetRule(DefaultRuleKey)
 	assert.NotNil(t, rule)
-	assert.Equal(t, "no mice", rule(d, 0))
-	assert.Equal(t, "%{count} mouse", rule(d, 1))
-	assert.Equal(t, "%{count} mice", rule(d, 2))
+	assert.Equal(t, "no mice", rule(d, 0).Value())
+	assert.Equal(t, "%{count} mouse", rule(d, 1).Value())
+	assert.Equal(t, "%{count} mice", rule(d, 2).Value())
 
 	d = &Dict{
 		entries: map[string]*Dict{
@@ -26,7 +26,7 @@ func TestZeroOneOtherRule(t *testing.T) {
 			"other": {value: "%{count} mice"},
 		},
 	}
-	assert.Equal(t, "%{count} mice", rule(d, 0))
-	assert.Equal(t, "%{count} mouse", rule(d, 1))
-	assert.Equal(t, "%{count} mice", rule(d, 2))
+	assert.Equal(t, "%{count} mice", rule(d, 0).Value())
+	assert.Equal(t, "%{count} mouse", rule(d, 1).Value())
+	assert.Equal(t, "%{count} mice", rule(d, 2).Value())
 }
