@@ -23,30 +23,31 @@ func TestDictUnmarshalJSON(t *testing.T) {
 	dict := new(Dict)
 	err := json.Unmarshal([]byte(ex), dict)
 	require.NoError(t, err)
-	assert.Equal(t, "bar", dict.Get("foo"))
-	assert.Equal(t, "quux", dict.Get("baz.qux"))
-	assert.Equal(t, "", dict.Get("baz.plural"))
-	assert.Equal(t, "!(MISSING: random)", dict.Get("random"))
+	assert.Equal(t, "bar", dict.Get("foo").Value())
+	assert.Equal(t, "quux", dict.Get("baz.qux").Value())
+	assert.Empty(t, dict.Get("baz.plural").Value())
+	assert.Empty(t, dict.Get("random").Value())
 }
 
 func TestDictAdd(t *testing.T) {
 	d := NewDict()
+	assert.Nil(t, d.Get(""))
 	d.Add("foo", "bar")
-	assert.Equal(t, "bar", d.Get("foo"))
+	assert.Equal(t, "bar", d.Get("foo").Value())
 
 	d.Add("plural", map[string]any{
 		"zero":  "no mice",
 		"one":   "%s mouse",
 		"other": "%s mice",
 	})
-	assert.Equal(t, "no mice", d.Get("plural.zero"))
-	assert.Equal(t, "%s mice", d.Get("plural.other"))
+	assert.Equal(t, "no mice", d.Get("plural.zero").Value())
+	assert.Equal(t, "%s mice", d.Get("plural.other").Value())
 
 	d.Add("bad", 10) // ignore
-	assert.Equal(t, "!(MISSING: bad)", d.Get("bad"))
+	assert.Nil(t, d.Get("bad"))
 
 	d.Add("self", d)
-	assert.Equal(t, "bar", d.Get("self.foo"))
+	assert.Equal(t, "bar", d.Get("self.foo").Value())
 }
 
 func TestDictMerge(t *testing.T) {
@@ -74,9 +75,9 @@ func TestDictMerge(t *testing.T) {
 
 	d3 := new(Dict)
 	d3.Merge(d2)
-	assert.Equal(t, "value", d3.Get("extra"))
+	assert.Equal(t, "value", d3.Get("extra").Value())
 
 	d1.Merge(d2)
-	assert.Equal(t, "bar", d1.Get("foo"))
-	assert.Equal(t, "value", d1.Get("extra"))
+	assert.Equal(t, "bar", d1.Get("foo").Value())
+	assert.Equal(t, "value", d1.Get("extra").Value())
 }

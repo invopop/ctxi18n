@@ -5,6 +5,10 @@ const (
 	DefaultRuleKey = "default"
 )
 
+// PluralRule defines a simple method that expects a dictionary and number and
+// will find a matching dictionary entry.
+type PluralRule func(d *Dict, num int) *Dict
+
 const (
 	zeroKey  = "zero"
 	oneKey   = "one"
@@ -13,11 +17,11 @@ const (
 
 var rules = map[string]PluralRule{
 	// Most languages can use this rule
-	DefaultRuleKey: func(d *Dict, n int) string {
+	DefaultRuleKey: func(d *Dict, n int) *Dict {
 		if n == 0 {
-			v := d.GetEntry(zeroKey)
+			v := d.Get(zeroKey)
 			if v != nil {
-				return v.value
+				return v
 			}
 		}
 		if n == 1 {

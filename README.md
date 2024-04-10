@@ -12,7 +12,7 @@ Go Context Internationalization - translating apps easily.
 
 `ctxi18n` is heavily influenced by [internationalization in Ruby on Rails](https://guides.rubyonrails.org/i18n.html) and aims to make it just as straightforward in Go applications.
 
-As the name suggests, `ctxi18n` focusses on making i18n data available inside an application's context instances, but is sufficiently flexible to use directly if needed.
+As the name suggests, `ctxi18n` focusses on making i18n data available inside an application's context instances, but is sufficiently flexible to used directly if needed.
 
 Key Features:
 
@@ -22,6 +22,7 @@ Key Features:
 - Short method names like `i18n.T()` or `i18n.N()`.
 - Support for simple interpolation using keys, e.g. `Some %{key} text`
 - Support for pluralization rules.
+- Default values when translations are missing.
 
 ## Usage
 
@@ -102,6 +103,30 @@ fmt.Println(l.T("welcome.title"))
 
 There is no preferred way on how to use this library, so please use whatever best first your application and coding style. Sometimes it makes sense to pass in the context in every call, other times the code can be shorter and more concise by extracting it.
 
+### Defaults
+
+If a translation is missing from the locale a "missing" text will be produced, for example:
+
+```go
+fmt.Println(l.T("welcome.no.text"))
+```
+
+Will return a text that follows the `fmt.Sprintf` missing convention:
+
+```
+!(MISSING welcome.no.text)
+```
+
+This can be useful for translators to figure out which texts are missing, but sometimes a default value is more appropriate:
+
+```go
+fmt.Println(i18n.T(ctx, "welcome.question", i18n.Default("Just ask!")))
+// output: "Just ask!"
+code := "EUR"
+fmt.Println(i18n.T(ctx, "currencies."+code, i18n.Default(code)))
+// output: "EUR"
+```
+
 ### Interpolation
 
 Go's default approach for interpolation using the `fmt.Sprintf` and related methods is good for simple use-cases. For example, given the following translation:
@@ -131,6 +156,12 @@ i18n.T(ctx, "welcome.title", i18n.M{"name":"Sam"})
 ```
 
 The `i18n.M` map is used to perform a simple find and replace on the matching translation. The `fmt.Sprint` method is used to convert values into strings, so you don't need to worry about simple serialization like for numbers.
+
+Interpolation can also be used alongside default values:
+
+```go
+i18n.T(ctx, "welcome.title", i18n.Default("Hi %{name}"), i18n.M{"name":"Sam"})
+```
 
 ## Pluralization
 
@@ -187,7 +218,9 @@ package main
 import "github.com/invopop/ctxi18n/i18n"
 
 templ Hello(name string) {
-  <div>{ i18n.T(ctx, "welcome.hello", i18n.M{"name": name}) }</div>
+  <span class="hello">
+    { i18n.T(ctx, "welcome.hello", i18n.M{"name": name}) }
+  </span>
 }
 
 templ Greeting(person Person) {
@@ -197,8 +230,10 @@ templ Greeting(person Person) {
 }
 ```
 
+To save even more typing, it might be worth defining your own templ wrappers around those defined in the `i18n` package. Check out the [gobl.html `t` package](https://github.com/invopop/gobl.html/tree/main/components/t) for an example.
+
 # Examples
 
 The following is a list of Open Source projects using this library from which you can see working examples for your own solutions. Please send in a PR if you'd like to add your project!
 
-- [GOBL HTML](https://github.com/invopop/gobl.html) - generate HTML files from [GOBL](https://gobl.org) documents.
+- [GOBL HTML](https://github.com/invopop/gobl.html) - generate HTML files like invoices from [GOBL](https://gobl.org) documents.

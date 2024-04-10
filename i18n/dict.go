@@ -2,12 +2,7 @@ package i18n
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
-)
-
-const (
-	missingDictOut = "!(MISSING: %s)"
 )
 
 // Dict holds the internationalization entries for a specific locale.
@@ -41,17 +36,20 @@ func (d *Dict) Add(key string, value any) {
 	}
 }
 
-// Get provides the value from the dictionary at the provided key location.
-func (d *Dict) Get(key string) string {
-	entry := d.GetEntry(key)
-	if entry == nil {
-		return missing(key)
+// Value returns the dictionary value or an empty string
+// if the dictionary is nil.
+func (d *Dict) Value() string {
+	if d == nil {
+		return ""
 	}
-	return entry.value
+	return d.value
 }
 
-// GetEntry recursively retrieves the dictionary at the provided key location.
-func (d *Dict) GetEntry(key string) *Dict {
+// Get recursively retrieves the dictionary at the provided key location.
+func (d *Dict) Get(key string) *Dict {
+	if d == nil {
+		return nil
+	}
 	if key == "" {
 		return nil
 	}
@@ -63,7 +61,7 @@ func (d *Dict) GetEntry(key string) *Dict {
 	if len(n) == 1 {
 		return entry
 	}
-	return entry.GetEntry(n[1])
+	return entry.Get(n[1])
 }
 
 // Merge combines the entries of the second dictionary into this one.
@@ -94,8 +92,4 @@ func (d *Dict) UnmarshalJSON(data []byte) error {
 	}
 	d.entries = make(map[string]*Dict)
 	return json.Unmarshal(data, &d.entries)
-}
-
-func missing(key string) string {
-	return fmt.Sprintf(missingDictOut, key)
 }

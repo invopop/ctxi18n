@@ -14,12 +14,20 @@ type Locale struct {
 }
 
 const (
-	localeKey Code = "locale"
+	missingDictOut      = "!(MISSING: %s)"
+	localeKey      Code = "locale"
 )
 
-// PluralRule defines a simple method that expects a dictionary and number and
-// will find a matching string value.
-type PluralRule func(d *Dict, num int) string
+// DefaultText when detected as an argument to a translation
+// function will be used if no language match is found.
+type DefaultText string
+
+// Default when used as an argument to a translation function
+// ensure the provided txt is used as a default value if no
+// language match is found.
+func Default(txt string) DefaultText {
+	return DefaultText(txt)
+}
 
 // NewLocale creates a new locale with the provided key and dictionary.
 func NewLocale(code Code, dict *Dict) *Locale {
@@ -39,17 +47,14 @@ func (l *Locale) Code() Code {
 
 // T provides the value from the dictionary stored by the locale.
 func (l *Locale) T(key string, args ...any) string {
-	return interpolate(l.dict.Get(key), args...)
+	return interpolate(key, l.dict.Get(key), args...)
 }
 
 // N uses the locale pluralization rules to determine which
 // string value to provide based on the provided number.
 func (l *Locale) N(key string, n int, args ...any) string {
-	entry := l.dict.GetEntry(key)
-	if entry == nil {
-		return missing(key)
-	}
-	return interpolate(l.rule(entry, n), args...)
+	d := l.dict.Get(key)
+	return interpolate(key, l.rule(d, n), args...)
 }
 
 // PluralRule provides the pluralization rule for the locale.
@@ -83,7 +88,15 @@ func GetLocale(ctx context.Context) *Locale {
 	return nil
 }
 
-func interpolate(s string, args ...any) string {
+func interpolate(key string, d *Dict, args ...any) string {
+	var s string
+	s, args = extractDefault(args)
+	if d != nil {
+		s = d.value
+	}
+	if s == "" {
+		return missing(key)
+	}
 	if len(args) > 0 {
 		switch arg := args[0].(type) {
 		case M:
@@ -93,4 +106,17 @@ func interpolate(s string, args ...any) string {
 		}
 	}
 	return s
+}
+
+func extractDefault(args []any) (string, []any) {
+	for i, arg := range args {
+		if dt, ok := arg.(DefaultText); ok {
+			return string(dt), append(args[:i], args[i+1:]...)
+		}
+	}
+	return "", args
+}
+
+func missing(key string) string {
+	return fmt.Sprintf(missingDictOut, key)
 }
