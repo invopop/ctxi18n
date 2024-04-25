@@ -24,6 +24,20 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, "en", l.Code().String())
 }
 
+func TestLoadWithDefault(t *testing.T) {
+	err := ctxi18n.LoadWithDefault(examples.Content, "en")
+	assert.NoError(t, err)
+
+	l := ctxi18n.Get("en")
+	assert.NotNil(t, l)
+	assert.Equal(t, "en", l.Code().String())
+	assert.Equal(t, "Special Label", l.T("special_label"))
+	l = ctxi18n.Get("es")
+	assert.NotNil(t, l)
+	assert.Equal(t, "es", l.Code().String())
+	assert.Equal(t, "Special Label", l.T("special_label"))
+}
+
 func TestGet(t *testing.T) {
 	err := ctxi18n.Load(examples.Content)
 	assert.NoError(t, err)

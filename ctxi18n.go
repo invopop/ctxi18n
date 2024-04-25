@@ -36,6 +36,13 @@ func Load(fs fs.FS) error {
 	return locales.Load(fs)
 }
 
+// LoadWithDefault performs the regular load operation, but will merge
+// the default locale with every other locale, ensuring that every text
+// has at least the value from the default locale.
+func LoadWithDefault(fs fs.FS, locale i18n.Code) error {
+	return locales.LoadWithDefault(fs, locale)
+}
+
 // Get provides the Locale object for the matching code.
 func Get(code i18n.Code) *i18n.Locale {
 	return locales.Get(code)
