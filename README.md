@@ -1,4 +1,5 @@
 # ctxi18n
+![Coverage](https://img.shields.io/badge/Coverage-93.9%25-brightgreen)
 
 [![Lint](https://github.com/invopop/ctxi18n/actions/workflows/lint.yaml/badge.svg)](https://github.com/invopop/ctxi18n/actions/workflows/lint.yaml)
 [![Test Go](https://github.com/invopop/ctxi18n/actions/workflows/test.yaml/badge.svg)](https://github.com/invopop/ctxi18n/actions/workflows/test.yaml)
