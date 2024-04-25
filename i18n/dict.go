@@ -64,7 +64,8 @@ func (d *Dict) Get(key string) *Dict {
 	return entry.Get(n[1])
 }
 
-// Merge combines the entries of the second dictionary into this one.
+// Merge combines the entries of the second dictionary into this one. If a
+// key is duplicated in the second diction, the original value takes priority.
 func (d *Dict) Merge(d2 *Dict) {
 	if d2 == nil {
 		return

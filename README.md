@@ -61,6 +61,14 @@ if err := ctxi18n.Load(assets.Content); err != nil {
 }
 ```
 
+If you'd like to set a default base language to try to use for any missing translations, load the assets with a default:
+
+```go
+if err := ctxi18n.LoadWithDefault(assets.Content, "en"); err != nil {
+    panic(err)
+}
+```
+
 You'll now have a global set of locales prepared in memory and ready to use. Assuming your application uses some kind of context such as from an HTTP or gRPC request, you'll want to add a single locale to it:
 
 ```go

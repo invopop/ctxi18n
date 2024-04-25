@@ -66,6 +66,7 @@ func TestDictMerge(t *testing.T) {
 	require.NoError(t, json.Unmarshal([]byte(ex), d1))
 
 	ex2 := `{
+		"foo": "baz",
 		"extra": "value"
 	}`
 	d2 := new(Dict)
@@ -78,6 +79,6 @@ func TestDictMerge(t *testing.T) {
 	assert.Equal(t, "value", d3.Get("extra").Value())
 
 	d1.Merge(d2)
-	assert.Equal(t, "bar", d1.Get("foo").Value())
+	assert.Equal(t, "bar", d1.Get("foo").Value(), "should not overwrite")
 	assert.Equal(t, "value", d1.Get("extra").Value())
 }
