@@ -1,9 +1,9 @@
 # ctxi18n
 
-![Coverage](https://img.shields.io/badge/Coverage-93.9%25-brightgreen)
 [![Lint](https://github.com/invopop/ctxi18n/actions/workflows/lint.yaml/badge.svg)](https://github.com/invopop/ctxi18n/actions/workflows/lint.yaml)
 [![Test Go](https://github.com/invopop/ctxi18n/actions/workflows/test.yaml/badge.svg)](https://github.com/invopop/ctxi18n/actions/workflows/test.yaml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/invopop/ctxi18n)](https://goreportcard.com/report/github.com/invopop/ctxi18n)
+[![codecov](https://codecov.io/gh/invopop/ctxi18n/graph/badge.svg?token=17H4KY3CNZ)](https://codecov.io/gh/invopop/ctxi18n)
 [![GoDoc](https://godoc.org/github.com/invopop/ctxi18n?status.svg)](https://godoc.org/github.com/invopop/ctxi18n)
 ![Latest Tag](https://img.shields.io/github/v/tag/invopop/ctxi18n)
 
