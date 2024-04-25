@@ -42,6 +42,28 @@ func (ls *Locales) Load(src fs.FS) error {
 	})
 }
 
+// LoadWithDefault performs the regular load operation, but follows up with
+// a second operation that will ensure that default dictionary is merged with
+// every other locale, thus ensuring that every text will have a fallback.
+func (ls *Locales) LoadWithDefault(src fs.FS, locale Code) error {
+	if err := ls.Load(src); err != nil {
+		return err
+	}
+
+	l := ls.Get(locale)
+	if l == nil {
+		return fmt.Errorf("undefined default locale: %s", locale)
+	}
+	for _, loc := range ls.list {
+		if loc == l {
+			continue
+		}
+		loc.dict.Merge(l.dict)
+	}
+
+	return nil
+}
+
 // Get provides the define Locale object for the matching key.
 func (ls *Locales) Get(code Code) *Locale {
 	for _, loc := range ls.list {
