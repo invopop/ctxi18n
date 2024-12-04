@@ -48,6 +48,14 @@ func TestN(t *testing.T) {
 	assert.Equal(t, "2 mice", i18n.N(ctx, "key", 2, i18n.M{"count": 2}))
 }
 
+func TestHas(t *testing.T) {
+	d := i18n.NewDict()
+	d.Add("key", "value")
+	l := i18n.NewLocale("en", d)
+	assert.True(t, l.Has("key"))
+	assert.False(t, l.Has("missing"))
+}
+
 func TestScopes(t *testing.T) {
 	in := SampleLocaleData()
 	l := i18n.NewLocale("en", nil)
@@ -57,9 +65,12 @@ func TestScopes(t *testing.T) {
 	ctxScoped := i18n.WithScope(ctx, "baz")
 
 	assert.Equal(t, "quux", i18n.T(ctxScoped, ".qux"))
+	assert.True(t, i18n.Has(ctxScoped, ".qux"))
 	assert.Equal(t, "!(MISSING: baz.bad)", i18n.T(ctxScoped, ".bad"))
+	assert.False(t, i18n.Has(ctx, ".bad"))
 	assert.Equal(t, "quux", i18n.T(ctx, "baz.qux"))
 	assert.Equal(t, "!(MISSING: .qux)", i18n.T(ctx, ".qux"))
+	assert.False(t, i18n.Has(ctx, ".qux"))
 
 	assert.Equal(t, "no mice", i18n.N(ctxScoped, ".mice", 0, i18n.M{"count": 0}))
 

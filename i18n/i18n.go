@@ -44,6 +44,16 @@ func N(ctx context.Context, key string, n int, args ...any) string {
 	return l.N(key, n, args...)
 }
 
+// Has performs a check to see if the key exists in the locale.
+func Has(ctx context.Context, key string) bool {
+	l := GetLocale(ctx)
+	if l == nil {
+		return false
+	}
+	key = ExpandKey(ctx, key)
+	return l.Has(key)
+}
+
 // WithScope is used to add a new scope to the context. To use this,
 // use a `.` at the beginning of keys.
 func WithScope(ctx context.Context, key string) context.Context {

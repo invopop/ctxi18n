@@ -136,6 +136,14 @@ fmt.Println(i18n.T(ctx, "currencies."+code, i18n.Default(code)))
 // output: "EUR"
 ```
 
+An alternative to using defaults is to check if the key exists using the `Has` method:
+
+```go
+if !i18n.Has(ctx, "welcome.question") {
+  fmt.Println("Just ask!")
+}
+```
+
 ### Interpolation
 
 Go's default approach for interpolation using the `fmt.Sprintf` and related methods is good for simple use-cases. For example, given the following translation:

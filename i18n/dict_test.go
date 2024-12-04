@@ -50,6 +50,29 @@ func TestDictAdd(t *testing.T) {
 	assert.Equal(t, "bar", d.Get("self.foo").Value())
 }
 
+func TestDictHas(t *testing.T) {
+	t.Run("simple case", func(t *testing.T) {
+		d := NewDict()
+		assert.False(t, d.Has("foo"))
+		d.Add("foo", "bar")
+		assert.True(t, d.Has("foo"))
+		assert.False(t, d.Has("baz"))
+	})
+	t.Run("nested", func(t *testing.T) {
+		ex := `{
+			"foo": "bar",
+			"baz": {
+				"qux": "quux"
+			}
+		}`
+		d := new(Dict)
+		require.NoError(t, json.Unmarshal([]byte(ex), d))
+		assert.True(t, d.Has("foo"))
+		assert.True(t, d.Has("baz.qux"))
+		assert.False(t, d.Has("baz.quux"))
+	})
+}
+
 func TestDictMerge(t *testing.T) {
 	ex := `{
 		"foo": "bar",

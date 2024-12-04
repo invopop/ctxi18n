@@ -64,6 +64,13 @@ func (d *Dict) Get(key string) *Dict {
 	return entry.Get(n[1])
 }
 
+// Has is a convenience method to check if a key exists in the dictionary
+// recursively, and is the equivalent of calling `Get` and checking if
+// the result is not nil.
+func (d *Dict) Has(key string) bool {
+	return d.Get(key) != nil
+}
+
 // Merge combines the entries of the second dictionary into this one. If a
 // key is duplicated in the second diction, the original value takes priority.
 func (d *Dict) Merge(d2 *Dict) {
