@@ -22,6 +22,20 @@ func TestCode(t *testing.T) {
 	assert.Equal(t, i18n.Code(""), c.Base())
 }
 
+func TestCodeBase(t *testing.T) {
+	c := i18n.Code("en-US")
+	assert.Equal(t, "en", c.Base().String())
+
+	c = i18n.Code("en")
+	assert.Equal(t, "en", c.Base().String())
+
+	c = i18n.Code("x")
+	assert.Equal(t, "x", c.Base().String())
+
+	c = i18n.Code("")
+	assert.Equal(t, "", c.Base().String())
+}
+
 func TestParseAcceptLanguage(t *testing.T) {
 	list := i18n.ParseAcceptLanguage("en")
 	assert.Equal(t, []i18n.Code{"en"}, list)

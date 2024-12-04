@@ -63,6 +63,24 @@ func TestLocalWithContext(t *testing.T) {
 	require.NotNil(t, l2)
 }
 
+func TestLocalUnmarshalJSON(t *testing.T) {
+	l := i18n.NewLocale("en", nil)
+	require.NoError(t, l.UnmarshalJSON(SampleLocaleData()))
+
+	assert.Equal(t, "bar", l.T("foo"))
+
+	t.Run("empty", func(t *testing.T) {
+		ls := new(i18n.Locale)
+		err := ls.UnmarshalJSON([]byte{})
+		require.NoError(t, err)
+	})
+	t.Run("invalid", func(t *testing.T) {
+		ls := new(i18n.Locale)
+		err := ls.UnmarshalJSON([]byte("'bad'"))
+		require.ErrorContains(t, err, "invalid character")
+	})
+}
+
 func SampleLocaleData() []byte {
 	return []byte(`{
 		"foo": "bar",

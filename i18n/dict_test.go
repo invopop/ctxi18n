@@ -27,6 +27,12 @@ func TestDictUnmarshalJSON(t *testing.T) {
 	assert.Equal(t, "quux", dict.Get("baz.qux").Value())
 	assert.Empty(t, dict.Get("baz.plural").Value())
 	assert.Empty(t, dict.Get("random").Value())
+
+	t.Run("empty", func(t *testing.T) {
+		d := new(Dict)
+		err := d.UnmarshalJSON([]byte{})
+		require.NoError(t, err)
+	})
 }
 
 func TestDictAdd(t *testing.T) {

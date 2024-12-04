@@ -18,10 +18,7 @@ func (c Code) String() string {
 // Base returns the base language code, without any subtags.
 func (c Code) Base() Code {
 	out := strings.SplitN(c.String(), "-", 2)
-	if len(out) > 0 {
-		return Code(out[0])
-	}
-	return ""
+	return Code(out[0])
 }
 
 // ParseAcceptLanguage provides an ordered set of codes extracted
