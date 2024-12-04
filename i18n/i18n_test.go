@@ -52,8 +52,12 @@ func TestHas(t *testing.T) {
 	d := i18n.NewDict()
 	d.Add("key", "value")
 	l := i18n.NewLocale("en", d)
-	assert.True(t, l.Has("key"))
-	assert.False(t, l.Has("missing"))
+
+	ctx := l.WithContext(context.Background())
+	assert.True(t, i18n.Has(ctx, "key"))
+
+	ctx = context.Background()
+	assert.False(t, i18n.Has(ctx, "key"))
 }
 
 func TestScopes(t *testing.T) {
