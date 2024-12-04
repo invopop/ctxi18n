@@ -57,6 +57,13 @@ func (l *Locale) N(key string, n int, args ...any) string {
 	return interpolate(key, l.rule(d, n), args...)
 }
 
+// Has performs a check to see if the key exists in the locale.
+// This is useful for checking if a key exists before attempting
+// to use it when the Default function cannot be used.
+func (l *Locale) Has(key string) bool {
+	return l.dict.Has(key)
+}
+
 // PluralRule provides the pluralization rule for the locale.
 func (l *Locale) PluralRule() PluralRule {
 	return l.rule

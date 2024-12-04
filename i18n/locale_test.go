@@ -32,6 +32,16 @@ func TestLocaleGet(t *testing.T) {
 	assert.Equal(t, "2 mouses", l.N("baz.random", 2, i18n.Default("%{count} mouses"), i18n.M{"count": 2}))
 }
 
+func TestLocaleHas(t *testing.T) {
+	in := SampleLocaleData()
+	l := i18n.NewLocale("en", nil)
+	require.NoError(t, json.Unmarshal(in, l))
+
+	assert.True(t, l.Has("foo"))
+	assert.True(t, l.Has("baz.qux"))
+	assert.False(t, l.Has("baz.random"))
+}
+
 func TestLocaleInterpolate(t *testing.T) {
 	l := i18n.NewLocale("en", nil)
 	require.NoError(t, json.Unmarshal(SampleLocaleData(), l))
@@ -51,6 +61,24 @@ func TestLocalWithContext(t *testing.T) {
 	ctx := l.WithContext(context.Background())
 	l2 = i18n.GetLocale(ctx)
 	require.NotNil(t, l2)
+}
+
+func TestLocalUnmarshalJSON(t *testing.T) {
+	l := i18n.NewLocale("en", nil)
+	require.NoError(t, l.UnmarshalJSON(SampleLocaleData()))
+
+	assert.Equal(t, "bar", l.T("foo"))
+
+	t.Run("empty", func(t *testing.T) {
+		ls := new(i18n.Locale)
+		err := ls.UnmarshalJSON([]byte{})
+		require.NoError(t, err)
+	})
+	t.Run("invalid", func(t *testing.T) {
+		ls := new(i18n.Locale)
+		err := ls.UnmarshalJSON([]byte("'bad'"))
+		require.ErrorContains(t, err, "invalid character")
+	})
 }
 
 func SampleLocaleData() []byte {

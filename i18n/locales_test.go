@@ -87,6 +87,17 @@ func TestLocalesUnmarshalJSON(t *testing.T) {
 	assert.Equal(t, "quux", l.T("baz.qux"))
 	assert.Equal(t, "b", l.T("a"))
 	assert.Equal(t, "zuux", l.T("baz.zux"))
+
+	t.Run("empty", func(t *testing.T) {
+		ls := new(i18n.Locales)
+		err := ls.UnmarshalJSON([]byte{})
+		require.NoError(t, err)
+	})
+	t.Run("invalid", func(t *testing.T) {
+		ls := new(i18n.Locales)
+		err := ls.UnmarshalJSON([]byte("'bad'"))
+		require.ErrorContains(t, err, "invalid character")
+	})
 }
 
 func TestLocalesCodes(t *testing.T) {

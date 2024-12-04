@@ -17,7 +17,7 @@ type Locales struct {
 // Load walks through all the files in the provided File System
 // and merges every one with the current list of locales.
 func (ls *Locales) Load(src fs.FS) error {
-	return fs.WalkDir(src, ".", func(path string, d fs.DirEntry, err error) error {
+	return fs.WalkDir(src, ".", func(path string, _ fs.DirEntry, err error) error {
 		if err != nil {
 			return fmt.Errorf("walking directory: %w", err)
 		}
